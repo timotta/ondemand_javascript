@@ -1,0 +1,66 @@
+<html>
+<head>
+<script>
+	var OnDemandJS  = {
+		requests:[],
+		get:function(url,onsucess) {
+			var id = this.requests.length;
+			var request = {
+				onsucess:function(json) {
+					OnDemandJS.requests[id].clean();
+					onsucess(json);
+				},
+				clean:function() {
+					var s = document.getElementById("odjs" + id);
+					s.parentNode.removeChild(s);
+					OnDemandJS.requests[id] = null
+				}
+			}
+			this.requests.push(request);
+			url += url.indexOf('?')!=-1 ? '&' : '?';
+			url += 'callback=OnDemandJS.requests[' + id + '].onsucess';
+			var script = document.createElement("script");
+			script.type = "text/javascript";
+			script.src = url;
+			script.id = "odjs" + id
+			document.getElementsByTagName("head")[0].appendChild( script );
+		}
+	}
+
+	function soma_alerta(numero1,numero2) {
+		var url = "servidor-sleep10.php";
+		url += "?numero1=" + numero1;
+		url += "&numero2=" + numero2;
+
+		OnDemandJS.get( url, 
+		    function(json) { 
+			alert("Resultado: " + json.soma);			    
+		    }
+		);
+	}
+	function soma_html(numero1,numero2) {
+		var url = "servidor-sleep10.php";
+		url += "?numero1=" + numero1;
+		url += "&numero2=" + numero2;
+
+		OnDemandJS.get( url, 
+		    function(json) { 
+			document.getElementById("resultado").innerHTML = json.soma		    
+		    }
+		);
+	}
+</script>
+</head>
+<body>
+<form>
+	<input type="text" id="numero1" name="numero1" value="7" />
+	<input type="text" id="numero2" name="numero2" value="5" />
+	<input type="button" onClick="soma_alerta(this.form.numero1.value,this.form.numero2.value)" />
+
+	<input type="text" id="numeroA" name="numeroA" value="8" />
+	<input type="text" id="numeroB" name="numeroB" value="1" />
+	<input type="button" onClick="soma_html(this.form.numeroA.value,this.form.numeroB.value)" />
+	<div id="resultado"></div>
+</form>
+</body>
+</html>

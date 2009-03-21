@@ -1,0 +1,45 @@
+<html>
+<head>
+<script>
+
+	var OnDemandJS  = {
+		get:function(url,onsucess) {
+			this.onsucess = function(json) {
+				this.clean();
+				onsucess(json);
+			}
+			url += url.indexOf('?')!=-1 ? '&' : '?';
+			url += 'callback=OnDemandJS.onsucess';
+			var script = document.createElement("script");
+			script.type = "text/javascript";
+			script.src = url;
+			script.id = "odjs"
+			document.getElementsByTagName("head")[0].appendChild( script );
+		},
+		clean:function() {
+			var s = document.getElementById("odjs");
+			s.parentNode.removeChild(s);
+		}
+	}
+
+	function soma(numero1,numero2) {
+		var url = "servidor.php";
+		url += "?numero1=" + numero1;
+		url += "&numero2=" + numero2;
+
+		OnDemandJS.get( url, 
+		    function(json) { 
+			alert("Resultado: " + json.soma);			    
+		    }
+		);
+	}
+</script>
+</head>
+<body>
+<form>
+	<input type="text" id="numero1" name="numero1" value="7" />
+	<input type="text" id="numero2" name="numero2" value="5" />
+	<input type="button" onClick="soma(this.form.numero1.value,this.form.numero2.value)" />
+</form>
+</body>
+</html>
