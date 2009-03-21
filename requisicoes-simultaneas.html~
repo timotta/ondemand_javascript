@@ -13,7 +13,7 @@
 				clean:function() {
 					var s = document.getElementById("odjs" + id);
 					s.parentNode.removeChild(s);
-					OnDemandJS.requests[id] = null
+					OnDemandJS.requests[id] = null;
 				}
 			}
 			this.requests.push(request);
